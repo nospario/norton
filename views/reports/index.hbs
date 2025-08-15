@@ -1,0 +1,331 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-bar-chart"></i> Reports & Analytics
+    </h1>
+    <div class="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-download"></i> Export Reports
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/reports/export/monthly-summary?format=csv">Monthly Summary (CSV)</a></li>
+            <li><a class="dropdown-item" href="/reports/utilization">Utilization Report</a></li>
+            <li><a class="dropdown-item" href="/reports/worker-performance">Worker Performance</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Overview Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <a href="/residents" class="text-decoration-none">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Residents</h6>
+                            <h3 class="mb-0">{{overviewStats.total_residents}}</h3>
+                        </div>
+                        <div>
+                            <i class="bi bi-people display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Hours This Month</h6>
+                        <h3 class="mb-0">{{formatDecimal overviewStats.hours_this_month 1}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-clock display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Sessions This Month</h6>
+                        <h3 class="mb-0">{{overviewStats.sessions_this_month}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-calendar-event display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Utilization Rate</h6>
+                        <h3 class="mb-0">{{overviewStats.utilization_rate}}%</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-graph-up display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Report Links -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="/reports/monthly-summary" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="bi bi-calendar-month"></i><br>
+                            Monthly Summary
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/reports/utilization" class="btn btn-outline-success w-100 mb-2">
+                            <i class="bi bi-graph-up-arrow"></i><br>
+                            Utilization Report
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/reports/worker-performance" class="btn btn-outline-info w-100 mb-2">
+                            <i class="bi bi-person-badge"></i><br>
+                            Worker Performance
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/dashboard/monthly-overview" class="btn btn-outline-warning w-100 mb-2">
+                            <i class="bi bi-speedometer2"></i><br>
+                            Dashboard Overview
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Support Type Distribution -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-pie-chart"></i> Support Type Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if supportTypeStats}}
+                {{#each supportTypeStats}}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge" style="background-color: {{supportTypeColor support_type}}">
+                            {{supportTypeLabel support_type}}
+                        </span>
+                        <div class="text-end">
+                            <strong>{{session_count}} sessions</strong><br>
+                            <small class="text-muted">{{formatDecimal total_hours 1}} hours</small>
+                        </div>
+                    </div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar" style="background-color: {{supportTypeColor support_type}}; width: {{#ifCond session_count '>' 0}}{{calculatePercentage session_count ../supportTypeStats 'session_count'}}{{else}}0{{/ifCond}}%">
+                        </div>
+                    </div>
+                    <div class="small text-muted mt-1">
+                        Completed: {{completed_count}} | Cancelled: {{cancelled_count}} | No Show: {{no_show_count}}
+                    </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <div class="text-center text-muted">
+                    <i class="bi bi-pie-chart display-4"></i>
+                    <p class="mt-2">No session data available for this month</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-building"></i> Property Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if propertyStats}}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Occupancy</th>
+                                <th>Sessions</th>
+                                <th>Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each propertyStats}}
+                            <tr>
+                                <td>
+                                    <strong>{{name}}</strong><br>
+                                    <small class="text-muted">{{current_residents}}/{{max_capacity}} residents</small>
+                                </td>
+                                <td>
+                                    <span class="badge {{#ifCond occupancy_rate '>=' 80}}bg-success{{else}}{{#ifCond occupancy_rate '>=' 60}}bg-warning{{else}}bg-danger{{/ifCond}}{{/ifCond}}">
+                                        {{occupancy_rate}}%
+                                    </span>
+                                </td>
+                                <td>{{total_sessions}}</td>
+                                <td>{{formatDecimal total_hours 1}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="text-center text-muted">
+                    <i class="bi bi-building display-4"></i>
+                    <p class="mt-2">No property data available</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Performers -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-trophy"></i> Top Performing Workers
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if workerStats}}
+                <div class="list-group list-group-flush">
+                    {{#each (limit workerStats 5)}}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">{{first_name}} {{last_name}}</h6>
+                            <small class="text-muted">
+                                {{formatDecimal hours_worked 1}} hours • {{total_sessions}} sessions
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge {{#ifCond utilization_rate '>=' 80}}bg-success{{else}}{{#ifCond utilization_rate '>=' 60}}bg-warning{{else}}bg-danger{{/ifCond}}{{/ifCond}}">
+                                {{utilization_rate}}%
+                            </span><br>
+                            <small class="text-muted">{{completion_rate}}% completion</small>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="text-center text-muted">
+                    <i class="bi bi-trophy display-4"></i>
+                    <p class="mt-2">No worker data available</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-up"></i> High Utilization Residents
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if monthlyUtilization}}
+                <div class="list-group list-group-flush">
+                    {{#each (orderBy (filter monthlyUtilization 'utilization_rate' '>' 0) 'utilization_rate' 'desc' 5)}}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">{{first_name}} {{last_name}}</h6>
+                            <small class="text-muted">
+                                {{property_name}} • {{hours_used}} / {{monthly_support_hours}} hours
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge {{#ifCond utilization_rate '>=' 90}}bg-danger{{else}}{{#ifCond utilization_rate '>=' 70}}bg-warning{{else}}bg-success{{/ifCond}}{{/ifCond}}">
+                                {{utilization_rate}}%
+                            </span><br>
+                            <small class="text-muted">{{completed_sessions}} sessions</small>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="text-center text-muted">
+                    <i class="bi bi-graph-up display-4"></i>
+                    <p class="mt-2">No resident data available</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Performance Indicators -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-speedometer2"></i> Key Performance Indicators
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2">
+                        <h4 class="text-primary">{{calculateAverageUtilization monthlyUtilization}}%</h4>
+                        <small class="text-muted">Average Utilization</small>
+                    </div>
+                    <div class="col-md-2">
+                        <h4 class="text-success">{{calculateCompletionRate supportTypeStats}}%</h4>
+                        <small class="text-muted">Session Completion</small>
+                    </div>
+                    <div class="col-md-2">
+                        <h4 class="text-info">{{calculateAverageOccupancy propertyStats}}%</h4>
+                        <small class="text-muted">Property Occupancy</small>
+                    </div>
+                    <div class="col-md-2">
+                        <h4 class="text-warning">{{calculateWorkerUtilization workerStats}}%</h4>
+                        <small class="text-muted">Worker Utilization</small>
+                    </div>
+                    <div class="col-md-2">
+                        <h4 class="text-danger">{{calculateNoShowRate supportTypeStats}}%</h4>
+                        <small class="text-muted">No Show Rate</small>
+                    </div>
+                    <div class="col-md-2">
+                        <h4 class="text-secondary">{{calculateAverageSessionDuration supportTypeStats}}</h4>
+                        <small class="text-muted">Avg Session (min)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,209 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-person-plus"></i> Add New Resident
+    </h1>
+    <div>
+        <a href="/residents" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Residents
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resident Information</h5>
+            </div>
+            <div class="card-body">
+                {{#if error}}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+                {{/if}}
+                
+                <form action="/residents/create" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{resident.first_name}}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{resident.last_name}}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="property_id" class="form-label">Property <span class="text-danger">*</span></label>
+                                <select class="form-select" id="property_id" name="property_id" required>
+                                    <option value="">Select a property...</option>
+                                    {{#each properties}}
+                                    <option value="{{id}}" {{#if (eq id ../resident.property_id)}}selected{{/if}}>
+                                        {{name}} ({{current_residents}}/{{max_capacity}} residents)
+                                    </option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="monthly_support_hours" class="form-label">Monthly Support Hours <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="monthly_support_hours" name="monthly_support_hours" value="{{resident.monthly_support_hours}}" min="1" max="200" step="0.5" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" value="{{formatDateInput resident.start_date}}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" value="{{formatDateInput resident.end_date}}">
+                                <div class="form-text">Leave empty if resident is still active</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="contact_info" class="form-label">Contact Information</label>
+                                <input type="text" class="form-control" id="contact_info" name="contact_info" value="{{resident.contact_info}}" placeholder="Phone number, email, or emergency contact">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="special_requirements" class="form-label">Special Requirements</label>
+                                <textarea class="form-control" id="special_requirements" name="special_requirements" rows="3" placeholder="Any special support requirements or accommodations needed">{{resident.special_requirements}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Additional notes about this resident">{{resident.notes}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
+                                    <label class="form-check-label" for="is_active">
+                                        Resident is active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Create Resident
+                        </button>
+                        <a href="/residents" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resident Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-person-check text-primary"></i>
+                        Full name is required for proper identification
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-building text-success"></i>
+                        Property assignment determines location of support
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-clock text-warning"></i>
+                        Monthly hours determine support allocation
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-calendar-date text-info"></i>
+                        Start date should be first day of residency
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-telephone text-secondary"></i>
+                        Contact info helps with emergency situations
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Hours Guide</h5>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">Typical monthly allocations:</p>
+                <ul class="list-unstyled small">
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-success"></i>
+                        <strong>20-40 hours:</strong> Standard support
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-warning"></i>
+                        <strong>40-60 hours:</strong> Enhanced support
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-danger"></i>
+                        <strong>60+ hours:</strong> Intensive support
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Next Steps</h5>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">
+                    After creating this resident, you can:
+                </p>
+                <ul class="list-unstyled small">
+                    <li class="mb-1">
+                        <i class="bi bi-calendar-plus text-primary"></i>
+                        Schedule support sessions
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-bar-chart text-success"></i>
+                        Track support utilization
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-file-text text-info"></i>
+                        Generate reports and summaries
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-person-badge"></i> 
+        {{#if supportWorker.id}}Edit Support Worker{{else}}Add New Support Worker{{/if}}
+    </h1>
+    <div>
+        <a href="/support-workers" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Support Workers
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Worker Information</h5>
+            </div>
+            <div class="card-body">
+                {{#if error}}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+                {{/if}}
+                
+                <form action="{{#if supportWorker.id}}/support-workers/{{supportWorker.id}}/edit{{else}}/support-workers/create{{/if}}" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{supportWorker.first_name}}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{supportWorker.last_name}}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{supportWorker.email}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{supportWorker.phone}}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="max_hours_per_week" class="form-label">Maximum Hours per Week <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="max_hours_per_week" name="max_hours_per_week" value="{{supportWorker.max_hours_per_week}}" min="1" max="60" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="max_hours_per_month" class="form-label">Maximum Hours per Month <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="max_hours_per_month" name="max_hours_per_month" value="{{supportWorker.max_hours_per_month}}" min="1" max="250" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Specializations</label>
+                                {{#each supportTypes}}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="specialization_{{key}}" name="specializations" value="{{key}}"
+                                           {{#if (contains ../supportWorker.specializations key)}}checked{{/if}}>
+                                    <label class="form-check-label" for="specialization_{{key}}">
+                                        {{label}}
+                                    </label>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Additional notes about this support worker">{{supportWorker.notes}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{#if supportWorker.is_active}}checked{{/if}}>
+                                    <label class="form-check-label" for="is_active">
+                                        Support worker is active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> 
+                            {{#if supportWorker.id}}Update Support Worker{{else}}Create Support Worker{{/if}}
+                        </button>
+                        <a href="/support-workers" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-person-check text-primary"></i>
+                        Full name is required for identification
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-clock text-success"></i>
+                        Set realistic maximum hours per week/month
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-star text-warning"></i>
+                        Select all applicable specializations
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-envelope text-info"></i>
+                        Contact information helps with scheduling
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-toggle-on text-secondary"></i>
+                        Inactive workers won't appear in session scheduling
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        {{#if supportWorker.id}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Current Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <small class="text-muted">Sessions This Month:</small>
+                    <strong class="text-success">{{stats.sessionsThisMonth}}</strong>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">Hours Worked This Month:</small>
+                    <strong class="text-primary">{{stats.hoursThisMonth}}</strong>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">Monthly Utilization:</small>
+                    <strong class="text-warning">{{stats.monthlyUtilization}}%</strong>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">Weekly Hours:</small>
+                    <strong class="text-info">{{stats.weeklyHours}}</strong>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Hours Guide</h5>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">Typical weekly/monthly limits:</p>
+                <ul class="list-unstyled small">
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-success"></i>
+                        <strong>20-30h/week:</strong> Part-time workers
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-warning"></i>
+                        <strong>35-40h/week:</strong> Full-time workers
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-circle-fill text-info"></i>
+                        <strong>Monthly:</strong> Usually 4.3x weekly hours
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</div>

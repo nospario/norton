@@ -1,0 +1,287 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-person-lines-fill"></i> Worker Performance Report
+    </h1>
+    <div>
+        <a href="/reports" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Reports
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Active Workers</h6>
+                        <h3 class="mb-0">{{activeWorkerCount}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-people display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Hours</h6>
+                        <h3 class="mb-0">{{totalHoursWorked}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-clock display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Average Utilization</h6>
+                        <h3 class="mb-0">{{averageUtilization}}%</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-percent display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Sessions</h6>
+                        <h3 class="mb-0">{{totalSessions}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-calendar-check display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Worker Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Sessions</th>
+                                <th>Hours Worked</th>
+                                <th>Max Capacity</th>
+                                <th>Utilization</th>
+                                <th>Avg Session</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each workerPerformance}}
+                            <tr>
+                                <td>
+                                    <a href="/support-workers/{{id}}" class="text-decoration-none">
+                                        {{first_name}} {{last_name}}
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{#each specializations}}
+                                            <span class="badge badge-sm" style="background-color: {{color}}">{{label}}</span>
+                                        {{/each}}
+                                    </small>
+                                </td>
+                                <td>{{total_sessions}}</td>
+                                <td>{{hours_worked}}h</td>
+                                <td>{{max_hours_per_month}}h</td>
+                                <td>
+                                    <div class="progress" style="height: 15px;">
+                                        <div class="progress-bar {{#if (gt utilization_percentage 85)}}bg-danger{{else if (gt utilization_percentage 70)}}bg-success{{else if (gt utilization_percentage 40)}}bg-warning{{else}}bg-secondary{{/if}}" 
+                                             role="progressbar" 
+                                             style="width: {{utilization_percentage}}%"
+                                             aria-valuenow="{{utilization_percentage}}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small>{{utilization_percentage}}%</small>
+                                </td>
+                                <td>{{average_session_duration}}h</td>
+                                <td>
+                                    {{#if (gt performance_score 85)}}
+                                        <span class="badge bg-success">Excellent</span>
+                                    {{else if (gt performance_score 70)}}
+                                        <span class="badge bg-primary">Good</span>
+                                    {{else if (gt performance_score 50)}}
+                                        <span class="badge bg-warning">Average</span>
+                                    {{else}}
+                                        <span class="badge bg-secondary">Needs Improvement</span>
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Performance Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="performanceChart" width="300" height="300"></canvas>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Top Performers</h5>
+            </div>
+            <div class="card-body">
+                {{#each topPerformers}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <strong>{{first_name}} {{last_name}}</strong>
+                        <br>
+                        <small class="text-muted">{{hours_worked}}h, {{total_sessions}} sessions</small>
+                    </div>
+                    <span class="badge bg-success">{{performance_score}}</span>
+                </div>
+                {{#unless @last}}<hr class="my-2">{{/unless}}
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Specialization Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="specializationChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Capacity Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label small">Overutilized (>85%)</label>
+                            <div class="text-danger fs-4">{{overutilizedCount}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label small">Underutilized (<40%)</label>
+                            <div class="text-warning fs-4">{{underutilizedCount}}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label small">Optimal (70-85%)</label>
+                            <div class="text-success fs-4">{{optimalUtilizationCount}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label small">Available Capacity</label>
+                            <div class="text-info fs-4">{{availableCapacity}}h</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <h6 class="text-primary">Recommendations</h6>
+                    <ul class="small text-muted">
+                        <li>Consider redistributing workload for overutilized workers</li>
+                        <li>Identify training opportunities for underutilized workers</li>
+                        <li>Monitor optimal performers for burnout prevention</li>
+                        <li>Plan recruitment based on available capacity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Performance distribution chart
+const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+new Chart(performanceCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Excellent (85%+)', 'Good (70-84%)', 'Average (50-69%)', 'Needs Improvement (<50%)'],
+        datasets: [{
+            data: [{{excellentPerformers}}, {{goodPerformers}}, {{averagePerformers}}, {{poorPerformers}}],
+            backgroundColor: ['#198754', '#0d6efd', '#ffc107', '#6c757d']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Specialization breakdown chart
+const specializationCtx = document.getElementById('specializationChart').getContext('2d');
+new Chart(specializationCtx, {
+    type: 'bar',
+    data: {
+        labels: [{{#each specializationBreakdown}}'{{label}}'{{#unless @last}},{{/unless}}{{/each}}],
+        datasets: [{
+            label: 'Hours Delivered',
+            data: [{{#each specializationBreakdown}}{{hours}}{{#unless @last}},{{/unless}}{{/each}}],
+            backgroundColor: [{{#each specializationBreakdown}}'{{color}}'{{#unless @last}},{{/unless}}{{/each}}]
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>

@@ -1,0 +1,138 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-calendar-event"></i> Session Details
+    </h1>
+    <div class="btn-group" role="group">
+        <a href="/sessions" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Sessions
+        </a>
+        {{#if isAdmin}}
+        <a href="/sessions/{{session.id}}/edit" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit Session
+        </a>
+        {{/if}}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <span class="badge" style="background-color: {{supportTypeColor session.support_type}}">
+                        {{supportTypeLabel session.support_type}}
+                    </span>
+                    Session Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Resident</h6>
+                        <p class="h5 mb-3">
+                            <i class="bi bi-person"></i> {{session.resident_first_name}} {{session.resident_last_name}}
+                        </p>
+                        
+                        <h6 class="text-muted">Support Worker</h6>
+                        <p class="h5 mb-3">
+                            <i class="bi bi-person-badge"></i> {{session.worker_first_name}} {{session.worker_last_name}}
+                        </p>
+                        
+                        <h6 class="text-muted">Property</h6>
+                        <p class="h5 mb-3">
+                            <i class="bi bi-building"></i> {{session.property_name}}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Date & Time</h6>
+                        <p class="h5 mb-3">
+                            <i class="bi bi-calendar"></i> {{formatDate session.session_date}}<br>
+                            <i class="bi bi-clock"></i> {{formatTime session.start_time}} - {{formatTime session.end_time}}
+                        </p>
+                        
+                        <h6 class="text-muted">Duration</h6>
+                        <p class="h5 mb-3">
+                            <i class="bi bi-stopwatch"></i> {{session.duration_minutes}} minutes
+                        </p>
+                        
+                        <h6 class="text-muted">Status</h6>
+                        <p class="mb-3">
+                            <span class="badge fs-6
+                                {{#ifCond session.status '==' 'completed'}}bg-success{{/ifCond}}
+                                {{#ifCond session.status '==' 'planned'}}bg-primary{{/ifCond}}
+                                {{#ifCond session.status '==' 'cancelled'}}bg-danger{{/ifCond}}
+                                {{#ifCond session.status '==' 'no_show'}}bg-warning{{/ifCond}}">
+                                {{capitalize session.status}}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                
+                {{#if session.notes}}
+                <hr>
+                <h6 class="text-muted">Session Notes</h6>
+                <p class="mb-0">{{session.notes}}</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Session History</h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <small class="text-muted">Session Created</small>
+                        <p class="mb-1">{{formatDateTime session.created_at}}</p>
+                    </div>
+                    {{#if session.updated_at}}
+                    <div class="timeline-item">
+                        <small class="text-muted">Last Updated</small>
+                        <p class="mb-1">{{formatDateTime session.updated_at}}</p>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        
+        {{#if isAdmin}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {{#ifCond session.status '==' 'planned'}}
+                    <form method="POST" action="/sessions/{{session.id}}/status" class="d-inline">
+                        <input type="hidden" name="status" value="completed">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-check-circle"></i> Mark as Completed
+                        </button>
+                    </form>
+                    <form method="POST" action="/sessions/{{session.id}}/status" class="d-inline">
+                        <input type="hidden" name="status" value="no_show">
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="bi bi-exclamation-triangle"></i> Mark as No Show
+                        </button>
+                    </form>
+                    <form method="POST" action="/sessions/{{session.id}}/status" class="d-inline">
+                        <input type="hidden" name="status" value="cancelled">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-x-circle"></i> Cancel Session
+                        </button>
+                    </form>
+                    {{/ifCond}}
+                    
+                    <a href="/sessions/create?resident_id={{session.resident_id}}&support_worker_id={{session.support_worker_id}}&property_id={{session.property_id}}&support_type={{session.support_type}}" 
+                       class="btn btn-outline-primary w-100">
+                        <i class="bi bi-plus-circle"></i> Schedule Similar
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</div>

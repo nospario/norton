@@ -1,0 +1,164 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-calendar-month"></i> Monthly Overview
+    </h1>
+    <div>
+        <a href="/dashboard" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Allocated Hours</h6>
+                        <h3 class="mb-0">{{stats.totalAllocatedHours}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-clock display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Hours Used</h6>
+                        <h3 class="mb-0">{{stats.totalUsedHours}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-check-circle display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Remaining Hours</h6>
+                        <h3 class="mb-0">{{stats.remainingHours}}</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-hourglass display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Utilization Rate</h6>
+                        <h3 class="mb-0">{{stats.utilizationRate}}%</h3>
+                    </div>
+                    <div>
+                        <i class="bi bi-percent display-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resident Usage Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Resident</th>
+                                <th>Property</th>
+                                <th>Allocated</th>
+                                <th>Used</th>
+                                <th>Remaining</th>
+                                <th>Utilization</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each monthlyUsage}}
+                            <tr>
+                                <td>{{first_name}} {{last_name}}</td>
+                                <td>{{property_name}}</td>
+                                <td>{{monthly_support_hours}}h</td>
+                                <td>{{hours_used}}h</td>
+                                <td>{{hours_remaining}}h</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {{#if (gt utilization_percentage 80)}}bg-danger{{else if (gt utilization_percentage 60)}}bg-warning{{else}}bg-success{{/if}}" 
+                                             role="progressbar" 
+                                             style="width: {{utilization_percentage}}%"
+                                             aria-valuenow="{{utilization_percentage}}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{utilization_percentage}}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Type Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="supportTypeChart" width="300" height="300"></canvas>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Monthly Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="form-label small">Active Residents</label>
+                            <div class="text-primary fs-4">{{stats.activeResidents}}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="form-label small">Total Sessions</label>
+                            <div class="text-success fs-4">{{stats.totalSessions}}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="form-label small">Average Session Duration</label>
+                            <div class="text-info fs-4">{{stats.averageSessionDuration}}h</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

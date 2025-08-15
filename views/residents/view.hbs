@@ -1,0 +1,233 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-person"></i> Resident Details
+    </h1>
+    <div class="btn-group" role="group">
+        <a href="/residents" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Residents
+        </a>
+        {{#if isAdmin}}
+        <a href="/residents/{{resident.id}}/edit" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit Resident
+        </a>
+        {{/if}}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <p class="form-control-plaintext">{{resident.first_name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <p class="form-control-plaintext">{{resident.last_name}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Property</label>
+                            <p class="form-control-plaintext">
+                                <a href="/properties/{{resident.property_id}}" class="text-decoration-none">
+                                    {{resident.property_name}}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Monthly Support Hours</label>
+                            <p class="form-control-plaintext">{{resident.monthly_support_hours}} hours</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Start Date</label>
+                            <p class="form-control-plaintext">{{formatDate resident.start_date}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">End Date</label>
+                            <p class="form-control-plaintext">
+                                {{#if resident.end_date}}
+                                    {{formatDate resident.end_date}}
+                                {{else}}
+                                    <span class="text-muted">Current resident</span>
+                                {{/if}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Contact Information</label>
+                            <p class="form-control-plaintext">{{resident.contact_info}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <p class="form-control-plaintext">
+                                {{#if resident.is_active}}
+                                    <span class="badge bg-success">Active</span>
+                                {{else}}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {{/if}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {{#if resident.special_requirements}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Special Requirements</label>
+                            <p class="form-control-plaintext">{{resident.special_requirements}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if resident.notes}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <p class="form-control-plaintext">{{resident.notes}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+        
+        {{#if recentSessions.length}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Support Sessions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Support Type</th>
+                                <th>Duration</th>
+                                <th>Support Worker</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each recentSessions}}
+                            <tr>
+                                <td>{{formatDate session_date}}</td>
+                                <td>{{start_time}} - {{end_time}}</td>
+                                <td>
+                                    <span class="badge" style="background-color: {{supportTypeColor support_type}}">
+                                        {{supportTypeLabel support_type}}
+                                    </span>
+                                </td>
+                                <td>{{duration_hours}} hours</td>
+                                <td>{{worker_first_name}} {{worker_last_name}}</td>
+                                <td>
+                                    <a href="/sessions/{{id}}" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label small">Hours Used This Month</label>
+                    <div class="text-primary fs-4">{{stats.hoursUsedThisMonth}}</div>
+                    <div class="progress mt-1">
+                        <div class="progress-bar {{#if (gt stats.utilizationPercentage 80)}}bg-danger{{else if (gt stats.utilizationPercentage 60)}}bg-warning{{else}}bg-success{{/if}}" 
+                             role="progressbar" 
+                             style="width: {{stats.utilizationPercentage}}%" 
+                             aria-valuenow="{{stats.utilizationPercentage}}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{stats.utilizationPercentage}}%
+                        </div>
+                    </div>
+                    <small class="text-muted">{{stats.hoursRemainingThisMonth}} hours remaining</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Total Sessions This Month</label>
+                    <div class="text-success fs-4">{{stats.sessionsThisMonth}}</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Average Session Duration</label>
+                    <div class="text-info fs-4">{{stats.averageSessionDuration}} hours</div>
+                </div>
+            </div>
+        </div>
+        
+        {{#if stats.supportTypeBreakdown}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Type Usage</h5>
+            </div>
+            <div class="card-body">
+                {{#each stats.supportTypeBreakdown}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <span class="badge" style="background-color: {{color}}">{{label}}</span>
+                    </div>
+                    <div>
+                        <strong>{{hours}} hours</strong>
+                    </div>
+                </div>
+                {{#unless @last}}<hr class="my-2">{{/unless}}
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/sessions/create?resident_id={{resident.id}}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> Schedule New Session
+                    </a>
+                    <a href="/sessions?resident_id={{resident.id}}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-clock-history"></i> View All Sessions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

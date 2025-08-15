@@ -1,0 +1,237 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-pencil"></i> Edit Session
+    </h1>
+    <div class="btn-group" role="group">
+        <a href="/sessions/{{session.id}}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Session
+        </a>
+        <a href="/sessions" class="btn btn-outline-secondary">
+            <i class="bi bi-list"></i> All Sessions
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Session Details</h5>
+            </div>
+            <div class="card-body">
+                {{#if error}}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i> {{error}}
+                </div>
+                {{/if}}
+
+                {{#if success}}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> {{success}}
+                </div>
+                {{/if}}
+
+                <form method="POST" action="/sessions/{{session.id}}/edit">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="property_id" class="form-label">Property</label>
+                            <select class="form-select" id="property_id" name="property_id" required>
+                                <option value="">Select Property</option>
+                                {{#each properties}}
+                                <option value="{{id}}" {{#ifCond id '==' ../session.property_id}}selected{{/ifCond}}>
+                                    {{name}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="support_type" class="form-label">Support Type</label>
+                            <select class="form-select" id="support_type" name="support_type" required>
+                                <option value="">Select Support Type</option>
+                                {{#each supportTypes}}
+                                <option value="{{key}}" {{#ifCond key '==' ../session.support_type}}selected{{/ifCond}}>
+                                    {{label}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="resident_id" class="form-label">Resident</label>
+                            <select class="form-select" id="resident_id" name="resident_id" required>
+                                <option value="">Select Resident</option>
+                                {{#each residents}}
+                                <option value="{{id}}" data-property="{{property_id}}" {{#ifCond id '==' ../session.resident_id}}selected{{/ifCond}}>
+                                    {{first_name}} {{last_name}} ({{property_name}})
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="support_worker_id" class="form-label">Support Worker</label>
+                            <select class="form-select" id="support_worker_id" name="support_worker_id" required>
+                                <option value="">Select Support Worker</option>
+                                {{#each supportWorkers}}
+                                <option value="{{id}}" {{#ifCond id '==' ../session.support_worker_id}}selected{{/ifCond}}>
+                                    {{first_name}} {{last_name}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="session_date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="session_date" name="session_date" 
+                                   value="{{session.session_date}}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="start_time" class="form-label">Start Time</label>
+                            <input type="time" class="form-control" id="start_time" name="start_time" 
+                                   value="{{formatTime session.start_time}}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="end_time" class="form-label">End Time</label>
+                            <input type="time" class="form-control" id="end_time" name="end_time" 
+                                   value="{{formatTime session.end_time}}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="planned" {{#ifCond session.status '==' 'planned'}}selected{{/ifCond}}>Planned</option>
+                                <option value="completed" {{#ifCond session.status '==' 'completed'}}selected{{/ifCond}}>Completed</option>
+                                <option value="cancelled" {{#ifCond session.status '==' 'cancelled'}}selected{{/ifCond}}>Cancelled</option>
+                                <option value="no_show" {{#ifCond session.status '==' 'no_show'}}selected{{/ifCond}}>No Show</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="duration_minutes" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="duration_minutes" name="duration_minutes" 
+                                   value="{{session.duration_minutes}}" min="15" step="15" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Session Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Optional notes about this session">{{session.notes}}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Update Session
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="deleteSession()">
+                            <i class="bi bi-trash"></i> Delete Session
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Session Info</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Current Status:</strong> 
+                    <span class="badge 
+                        {{#ifCond session.status '==' 'completed'}}bg-success{{/ifCond}}
+                        {{#ifCond session.status '==' 'planned'}}bg-primary{{/ifCond}}
+                        {{#ifCond session.status '==' 'cancelled'}}bg-danger{{/ifCond}}
+                        {{#ifCond session.status '==' 'no_show'}}bg-warning{{/ifCond}}">
+                        {{capitalize session.status}}
+                    </span>
+                </p>
+                <p><strong>Created:</strong><br>{{formatDateTime session.created_at}}</p>
+                {{#if session.updated_at}}
+                <p><strong>Last Updated:</strong><br>{{formatDateTime session.updated_at}}</p>
+                {{/if}}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Help</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li><strong>Duration:</strong> Minimum 15 minutes in 15-minute increments</li>
+                    <li><strong>Status:</strong> 
+                        <ul>
+                            <li><span class="badge bg-primary">Planned</span> - Future session</li>
+                            <li><span class="badge bg-success">Completed</span> - Session occurred</li>
+                            <li><span class="badge bg-danger">Cancelled</span> - Session cancelled</li>
+                            <li><span class="badge bg-warning">No Show</span> - Resident didn't attend</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter residents by property
+document.getElementById('property_id').addEventListener('change', function() {
+    const selectedProperty = this.value;
+    const residentSelect = document.getElementById('resident_id');
+    const residents = residentSelect.getElementsByTagName('option');
+    
+    for (let i = 1; i < residents.length; i++) { // Skip first option
+        const resident = residents[i];
+        const residentProperty = resident.getAttribute('data-property');
+        
+        if (!selectedProperty || residentProperty === selectedProperty) {
+            resident.style.display = 'block';
+        } else {
+            resident.style.display = 'none';
+        }
+    }
+    
+    // Reset resident selection if current selection is not valid for new property
+    const currentResident = residentSelect.querySelector('option:checked');
+    if (currentResident && currentResident.getAttribute('data-property') !== selectedProperty) {
+        residentSelect.value = '';
+    }
+});
+
+// Calculate duration based on start/end times
+function updateDuration() {
+    const startTime = document.getElementById('start_time').value;
+    const endTime = document.getElementById('end_time').value;
+    
+    if (startTime && endTime) {
+        const start = new Date('1970-01-01T' + startTime + ':00');
+        const end = new Date('1970-01-01T' + endTime + ':00');
+        const diffMs = end - start;
+        const diffMins = Math.round(diffMs / 60000);
+        
+        if (diffMins > 0) {
+            document.getElementById('duration_minutes').value = diffMins;
+        }
+    }
+}
+
+document.getElementById('start_time').addEventListener('change', updateDuration);
+document.getElementById('end_time').addEventListener('change', updateDuration);
+
+// Delete session confirmation
+function deleteSession() {
+    if (confirm('Are you sure you want to delete this session? This action cannot be undone.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/sessions/{{session.id}}/delete';
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>

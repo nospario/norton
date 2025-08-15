@@ -1,0 +1,245 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-plus-circle"></i> Create Session
+    </h1>
+    <a href="/sessions" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Sessions
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Session Details</h5>
+            </div>
+            <div class="card-body">
+                {{#if error}}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i> {{error}}
+                </div>
+                {{/if}}
+                
+                <form method="POST" action="/sessions/create" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="property_id" class="form-label">Property *</label>
+                                <select class="form-select" id="property_id" name="property_id" required>
+                                    <option value="">Select a property...</option>
+                                    {{#each properties}}
+                                    <option value="{{id}}" {{#eq id ../preselected.property_id}}selected{{/eq}} {{#if ../formData}}{{#eq id ../formData.property_id}}selected{{/eq}}{{/if}}>
+                                        {{name}}
+                                    </option>
+                                    {{/each}}
+                                </select>
+                                <div class="invalid-feedback">Please select a property.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="resident_id" class="form-label">Resident *</label>
+                                <select class="form-select" id="resident_id" name="resident_id" required>
+                                    <option value="">Select a resident...</option>
+                                    {{#each residents}}
+                                    <option value="{{id}}" data-property="{{property_id}}" {{#eq id ../preselected.resident_id}}selected{{/eq}} {{#if ../formData}}{{#eq id ../formData.resident_id}}selected{{/eq}}{{/if}}>
+                                        {{first_name}} {{last_name}}
+                                    </option>
+                                    {{/each}}
+                                </select>
+                                <div class="invalid-feedback">Please select a resident.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="support_worker_id" class="form-label">Support Worker *</label>
+                                <select class="form-select" id="support_worker_id" name="support_worker_id" required>
+                                    <option value="">Select a support worker...</option>
+                                    {{#each supportWorkers}}
+                                    <option value="{{id}}" {{#eq id ../preselected.support_worker_id}}selected{{/eq}} {{#if ../formData}}{{#eq id ../formData.support_worker_id}}selected{{/eq}}{{/if}}>
+                                        {{first_name}} {{last_name}}
+                                    </option>
+                                    {{/each}}
+                                </select>
+                                <div class="invalid-feedback">Please select a support worker.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="support_type" class="form-label">Support Type *</label>
+                                <select class="form-select" id="support_type" name="support_type" required>
+                                    <option value="">Select support type...</option>
+                                    {{#each supportTypes}}
+                                    <option value="{{key}}" {{#eq key ../preselected.support_type}}selected{{/eq}} {{#if ../formData}}{{#eq key ../formData.support_type}}selected{{/eq}}{{/if}}>
+                                        {{label}}
+                                    </option>
+                                    {{/each}}
+                                </select>
+                                <div class="invalid-feedback">Please select a support type.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="session_date" class="form-label">Date *</label>
+                                <input type="date" class="form-control" id="session_date" name="session_date" 
+                                       value="{{#if formData}}{{formData.session_date}}{{else}}{{preselected.session_date}}{{/if}}" required>
+                                <div class="invalid-feedback">Please provide a valid date.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="start_time" class="form-label">Start Time *</label>
+                                <input type="time" class="form-control" id="start_time" name="start_time" 
+                                       value="{{#if formData}}{{formData.start_time}}{{else}}{{preselected.start_time}}{{/if}}" required>
+                                <div class="invalid-feedback">Please provide a start time.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="end_time" class="form-label">End Time *</label>
+                                <input type="time" class="form-control" id="end_time" name="end_time" 
+                                       value="{{#if formData}}{{formData.end_time}}{{else}}{{preselected.end_time}}{{/if}}" required>
+                                <div class="invalid-feedback">Please provide an end time.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="duration_minutes" class="form-label">Duration (minutes) *</label>
+                                <input type="number" class="form-control" id="duration_minutes" name="duration_minutes" 
+                                       min="15" max="480" step="15" 
+                                       value="{{#if formData}}{{formData.duration_minutes}}{{else}}60{{/if}}" required>
+                                <div class="form-text">Minimum 15 minutes, maximum 8 hours</div>
+                                <div class="invalid-feedback">Please provide a valid duration (15-480 minutes).</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="planned" {{#eq "planned" formData.status}}selected{{/eq}}>Planned</option>
+                                    <option value="completed" {{#eq "completed" formData.status}}selected{{/eq}}>Completed</option>
+                                    <option value="cancelled" {{#eq "cancelled" formData.status}}selected{{/eq}}>Cancelled</option>
+                                    <option value="no_show" {{#eq "no_show" formData.status}}selected{{/eq}}>No Show</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Optional notes about this session...">{{#if formData}}{{formData.notes}}{{/if}}</textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/sessions" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Create Session
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> Session Guidelines
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>Support Types:</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <span class="badge me-2" style="background-color: #dc3545">Mental Health</span>
+                        One-on-one counseling and mental health support
+                    </li>
+                    <li class="mb-2">
+                        <span class="badge me-2" style="background-color: #28a745">Domestic & Independence</span>
+                        Daily living skills and independence training
+                    </li>
+                    <li class="mb-2">
+                        <span class="badge me-2" style="background-color: #007bff">Activity Group</span>
+                        Group activities and social support programs
+                    </li>
+                </ul>
+                
+                <h6 class="mt-4">Duration Guidelines:</h6>
+                <ul class="small">
+                    <li>Minimum session: 15 minutes</li>
+                    <li>Typical session: 60-90 minutes</li>
+                    <li>Maximum session: 8 hours</li>
+                    <li>Sessions must be in 15-minute increments</li>
+                </ul>
+                
+                <h6 class="mt-4">Scheduling Notes:</h6>
+                <ul class="small">
+                    <li>Check support worker availability</li>
+                    <li>Verify resident's monthly hour allocation</li>
+                    <li>Avoid double-booking same worker</li>
+                    <li>Consider property capacity</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate duration when times change
+    const startTime = document.getElementById('start_time');
+    const endTime = document.getElementById('end_time');
+    const duration = document.getElementById('duration_minutes');
+    
+    function calculateDuration() {
+        if (startTime.value && endTime.value) {
+            const start = new Date(`2000-01-01T${startTime.value}`);
+            const end = new Date(`2000-01-01T${endTime.value}`);
+            const diffMs = end - start;
+            const diffMinutes = Math.round(diffMs / (1000 * 60));
+            
+            if (diffMinutes > 0) {
+                duration.value = diffMinutes;
+            }
+        }
+    }
+    
+    startTime.addEventListener('change', calculateDuration);
+    endTime.addEventListener('change', calculateDuration);
+    
+    // Filter residents by selected property
+    const propertySelect = document.getElementById('property_id');
+    const residentSelect = document.getElementById('resident_id');
+    const allResidents = Array.from(residentSelect.options);
+    
+    function filterResidents() {
+        const selectedProperty = propertySelect.value;
+        
+        // Clear current options except the first one
+        residentSelect.innerHTML = '<option value="">Select a resident...</option>';
+        
+        // Add residents for the selected property
+        allResidents.slice(1).forEach(option => {
+            if (!selectedProperty || option.dataset.property === selectedProperty) {
+                residentSelect.appendChild(option.cloneNode(true));
+            }
+        });
+    }
+    
+    propertySelect.addEventListener('change', filterResidents);
+    
+    // Initialize resident filtering
+    filterResidents();
+});
+</script>

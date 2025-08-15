@@ -1,0 +1,253 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-person-badge"></i> Support Worker Details
+    </h1>
+    <div class="btn-group" role="group">
+        <a href="/support-workers" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Support Workers
+        </a>
+        {{#if isAdmin}}
+        <a href="/support-workers/{{supportWorker.id}}/edit" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit Support Worker
+        </a>
+        {{/if}}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <p class="form-control-plaintext">{{supportWorker.first_name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <p class="form-control-plaintext">{{supportWorker.last_name}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <p class="form-control-plaintext">{{supportWorker.email}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <p class="form-control-plaintext">{{supportWorker.phone}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Maximum Hours per Week</label>
+                            <p class="form-control-plaintext">{{supportWorker.max_hours_per_week}} hours</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <p class="form-control-plaintext">
+                                {{#if supportWorker.is_active}}
+                                    <span class="badge bg-success">Active</span>
+                                {{else}}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {{/if}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Specializations</label>
+                            <p class="form-control-plaintext">
+                                {{#each supportWorker.specializations}}
+                                    <span class="badge" style="background-color: {{color}}">{{label}}</span>
+                                {{/each}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {{#if supportWorker.notes}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <p class="form-control-plaintext">{{supportWorker.notes}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Hired Date</label>
+                            <p class="form-control-plaintext">{{formatDate supportWorker.created_at}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Updated</label>
+                            <p class="form-control-plaintext">{{formatDate supportWorker.updated_at}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {{#if sessions.length}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Support Sessions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Resident</th>
+                                <th>Support Type</th>
+                                <th>Duration</th>
+                                <th>Property</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each sessions}}
+                            <tr>
+                                <td>{{formatDate session_date}}</td>
+                                <td>{{start_time}} - {{end_time}}</td>
+                                <td>{{resident_first_name}} {{resident_last_name}}</td>
+                                <td>
+                                    <span class="badge" style="background-color: {{supportTypeColor support_type}}">
+                                        {{supportTypeLabel support_type}}
+                                    </span>
+                                </td>
+                                <td>{{duration_hours}} hours</td>
+                                <td>{{property_name}}</td>
+                                <td>
+                                    <a href="/sessions/{{id}}" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Performance Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label small">Hours Worked This Month</label>
+                    <div class="text-primary fs-4">{{stats.hoursThisMonth}}</div>
+                    <div class="progress mt-1">
+                        <div class="progress-bar {{#if (gt stats.utilizationPercentage 80)}}bg-danger{{else if (gt stats.utilizationPercentage 60)}}bg-warning{{else}}bg-success{{/if}}" 
+                             role="progressbar" 
+                             style="width: {{stats.utilizationPercentage}}%" 
+                             aria-valuenow="{{stats.utilizationPercentage}}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{stats.utilizationPercentage}}%
+                        </div>
+                    </div>
+                    <small class="text-muted">{{stats.remainingHours}} hours remaining this month</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Total Sessions This Month</label>
+                    <div class="text-success fs-4">{{stats.sessionsThisMonth}}</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Average Session Duration</label>
+                    <div class="text-info fs-4">{{stats.averageSessionDuration}} hours</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Residents Supported</label>
+                    <div class="text-warning fs-4">{{stats.uniqueResidents}}</div>
+                </div>
+            </div>
+        </div>
+        
+        {{#if stats.supportTypeBreakdown}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Support Type Distribution</h5>
+            </div>
+            <div class="card-body">
+                {{#each stats.supportTypeBreakdown}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <span class="badge" style="background-color: {{color}}">{{label}}</span>
+                    </div>
+                    <div>
+                        <strong>{{hours}} hours</strong>
+                    </div>
+                </div>
+                {{#unless @last}}<hr class="my-2">{{/unless}}
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/sessions/create?support_worker_id={{supportWorker.id}}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> Schedule New Session
+                    </a>
+                    <a href="/sessions?support_worker_id={{supportWorker.id}}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-clock-history"></i> View All Sessions
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        {{#if stats.upcomingSessions}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Upcoming Sessions</h5>
+            </div>
+            <div class="card-body">
+                {{#each stats.upcomingSessions}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <strong>{{formatDate session_date}}</strong>
+                        <br>
+                        <small class="text-muted">{{start_time}} - {{resident_first_name}} {{resident_last_name}}</small>
+                    </div>
+                    <a href="/sessions/{{id}}" class="btn btn-sm btn-outline-primary">View</a>
+                </div>
+                {{#unless @last}}<hr class="my-2">{{/unless}}
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</div>

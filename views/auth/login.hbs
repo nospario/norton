@@ -1,0 +1,48 @@
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title mb-0">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+        </h4>
+    </div>
+    <div class="card-body">
+        {{#if error}}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle"></i> {{error}}
+        </div>
+        {{/if}}
+        
+        <form method="POST" action="/auth/login">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="/auth/reset-password" class="text-decoration-none">
+                Forgot your password?
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h6 class="card-title">Demo Accounts</h6>
+        <small class="text-muted">
+            <strong>Admin:</strong> admin@support-hours.com / admin123<br>
+            <strong>Viewer:</strong> viewer@support-hours.com / admin123
+        </small>
+    </div>
+</div>

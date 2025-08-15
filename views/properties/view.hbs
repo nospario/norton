@@ -1,0 +1,143 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-building"></i> Property Details
+    </h1>
+    <div class="btn-group" role="group">
+        <a href="/properties" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Properties
+        </a>
+        {{#if isAdmin}}
+        <a href="/properties/{{property.id}}/edit" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit Property
+        </a>
+        {{/if}}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Property Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Property Name</label>
+                            <p class="form-control-plaintext">{{property.name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Maximum Capacity</label>
+                            <p class="form-control-plaintext">{{property.max_capacity}} residents</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <p class="form-control-plaintext">{{property.address}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Property Manager</label>
+                            <p class="form-control-plaintext">{{property.manager_name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Contact Information</label>
+                            <p class="form-control-plaintext">{{property.manager_contact}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <p class="form-control-plaintext">
+                                {{#if property.is_active}}
+                                    <span class="badge bg-success">Active</span>
+                                {{else}}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {{/if}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Created</label>
+                            <p class="form-control-plaintext">{{formatDate property.created_at}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{#if property.notes}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <p class="form-control-plaintext">{{property.notes}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Property Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label small">Current Residents</label>
+                    <div class="text-primary fs-4">{{stats.currentResidents}}</div>
+                    <div class="progress mt-1">
+                        <div class="progress-bar" role="progressbar" style="width: {{stats.occupancyPercentage}}%" aria-valuenow="{{stats.occupancyPercentage}}" aria-valuemin="0" aria-valuemax="100">
+                            {{stats.occupancyPercentage}}% Occupied
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Total Sessions This Month</label>
+                    <div class="text-success fs-4">{{stats.sessionsThisMonth}}</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small">Total Hours This Month</label>
+                    <div class="text-info fs-4">{{stats.hoursThisMonth}}</div>
+                </div>
+            </div>
+        </div>
+        
+        {{#if residents.length}}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Current Residents</h5>
+            </div>
+            <div class="card-body">
+                {{#each residents}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <strong>{{first_name}} {{last_name}}</strong>
+                        <br>
+                        <small class="text-muted">{{monthly_support_hours}}h/month allocated</small>
+                    </div>
+                    <a href="/residents/{{id}}" class="btn btn-sm btn-outline-primary">View</a>
+                </div>
+                {{#unless @last}}<hr>{{/unless}}
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</div>
